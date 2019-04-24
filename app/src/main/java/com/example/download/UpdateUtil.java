@@ -2,9 +2,7 @@ package com.example.download;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,17 +14,14 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -51,6 +46,7 @@ public class UpdateUtil {
     private String         apkName;
     private String         savePath;
     private ProgressDialog mProgressDialog;
+    private MyDialog       mMyDialog;
     private int            progress   = 0;
     //下载完成标志
     private boolean        updateFlag = false;
@@ -133,34 +129,40 @@ public class UpdateUtil {
             @Override
             public void run() {
                 //更新对话框
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("升级提示");
-                builder.setMessage("有新版本，请下载更新");
-                builder.setCancelable(false);
-                builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mProgressDialog = new ProgressDialog(activity);
-                        mProgressDialog.setMax(100);
-                        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        mProgressDialog.setTitle("正在下载...");
-                        mProgressDialog.setCancelable(false);
-                        mProgressDialog.show();
+                mMyDialog = new MyDialog(activity);
+                mMyDialog.setTitle("升级提示");
+                mMyDialog.setMessage("有新版本，请下载更新");
+                mMyDialog.setCancelable(false);
+                mMyDialog.setCancelOnClickListener("退出应用",
+                        new MyDialog.CancelOnClickListener() {
+                            @Override
+                            public void onCancelClick() {
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                            }
+                        });
+                mMyDialog.setConfirmOnClickListener("立即更新",
+                        new MyDialog.ConfirmOnClickListener() {
+                            @Override
+                            public void onConfirmClick() {
+                                mProgressDialog = new ProgressDialog(activity);
+                                mProgressDialog.setMax(100);
+                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                mProgressDialog.setTitle("正在下载...");
+                                mProgressDialog.setCancelable(false);
+                                mProgressDialog.show();
 
-                        //判断文件读写权限
-                        if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
-                                != PackageManager.PERMISSION_GRANTED) {
-                            mProgressDialog.dismiss();
-                            ActivityCompat.requestPermissions
-                                    (activity, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
-                        } else {
-                            new DownloadApk().start();
-                        }
-
-
-                    }
-                });
-                builder.show();
+                                //判断文件读写权限
+                                if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
+                                        != PackageManager.PERMISSION_GRANTED) {
+                                    mProgressDialog.dismiss();
+                                    ActivityCompat.requestPermissions
+                                            (activity, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+                                } else {
+                                    new DownloadApk().start();
+                                }
+                            }
+                        });
+                mMyDialog.show();
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.download;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,8 +29,8 @@ public class MyDialog extends Dialog {
     private ConfirmOnClickListener confirmOnClickListener;
     private CancelOnClickListener  cancelOnClickListener;
 
-    public MyDialog(Context context) {
-        super(context);
+    public MyDialog(Activity activity) {
+        super(activity);
     }
 
     /**
