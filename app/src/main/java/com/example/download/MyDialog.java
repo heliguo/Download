@@ -12,7 +12,7 @@ import android.widget.TextView;
  * @创建时间 2019/4/24 10:23
  * @描述
  */
-public class Mydialog extends Dialog {
+public class MyDialog extends Dialog {
 
     private Button   confirmBtn;
     private Button   cancelBtn;
@@ -28,7 +28,7 @@ public class Mydialog extends Dialog {
     private ConfirmOnClickListener confirmOnClickListener;
     private CancelOnClickListener  cancelOnClickListener;
 
-    public Mydialog(Context context) {
+    public MyDialog(Context context) {
         super(context);
     }
 
