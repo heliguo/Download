@@ -14,7 +14,6 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +27,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 /**
  * @创建者 李国赫
  * @创建时间 2019/4/23 10:25
- * @描述 app更新，需提供：
+ * @描述 app自动更新，后台下载，断点下载选择
+ * 需提供：
  * 1、下载地址URL
  * 2、apk需要保存位置
  * 3、apk名称
@@ -39,17 +39,18 @@ public class UpdateUtil {
     private static final int DOWNLOADING     = 1;
     private static final int DOWNLOAD_FINISH = 2;
 
-    private Activity       activity;
-    private String         packageName;
-    private int            newVersionCode;
-    private String         downloadUrl;
-    private String         apkName;
-    private String         savePath;
-    private ProgressDialog mProgressDialog;
-    private MyDialog       mMyDialog;
-    private int            progress   = 0;
+    private Activity         activity;
+    private String           packageName;
+    private int              newVersionCode;
+    private String           downloadUrl;
+    private String           apkName;
+    private String           savePath;
+    private ProgressDialog   mProgressDialog;
+    private MyDialog         mMyDialog;
+    private MyProgressDialog mMyProgressDialog;
+    private int              progress   = 0;
     //下载完成标志
-    private boolean        updateFlag = false;
+    private boolean          updateFlag = false;
 
     public UpdateUtil(Activity activity) {
         this.activity = activity;
@@ -62,11 +63,10 @@ public class UpdateUtil {
             super.handleMessage(msg);
             switch (msg.what) {
                 case DOWNLOADING:
-                    mProgressDialog.setProgress(progress);
+                    mMyProgressDialog.setProgress(progress);
                     break;
                 case DOWNLOAD_FINISH:
                     installApk();
-
                     break;
             }
         }
@@ -121,7 +121,7 @@ public class UpdateUtil {
     }
 
     /**
-     * 更新提示
+     * 下载更新，不更新直接退出程序
      */
     private void showUpdateProgress() {
         //开启线程更新
@@ -144,17 +144,16 @@ public class UpdateUtil {
                         new MyDialog.ConfirmOnClickListener() {
                             @Override
                             public void onConfirmClick() {
-                                mProgressDialog = new ProgressDialog(activity);
-                                mProgressDialog.setMax(100);
-                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                mProgressDialog.setTitle("正在下载...");
-                                mProgressDialog.setCancelable(false);
-                                mProgressDialog.show();
-
+                                mMyProgressDialog = new MyProgressDialog(activity);
+                                mMyProgressDialog.setMax(100);
+                                mMyProgressDialog.setTitle("正在下载...");
+                                mMyProgressDialog.setCancelable(false);
+                                mMyDialog.dismiss();
+                                mMyProgressDialog.show();
                                 //判断文件读写权限
                                 if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
-                                    mProgressDialog.dismiss();
+                                    mMyProgressDialog.dismiss();
                                     ActivityCompat.requestPermissions
                                             (activity, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
                                 } else {
@@ -202,7 +201,7 @@ public class UpdateUtil {
                         if (num <= 0) {
                             mHandler.sendEmptyMessage(DOWNLOAD_FINISH);
                             updateFlag = true;
-                            mProgressDialog.dismiss();
+                            mMyProgressDialog.dismiss();
                             break;
                         }
                         fos.write(buf, 0, num);
@@ -216,6 +215,10 @@ public class UpdateUtil {
             }
         }
     }
+    /**
+     * 支持断点下载
+     */
+
 
     /**
      * 安装apk

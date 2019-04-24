@@ -1,6 +1,5 @@
 package com.example.download;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.TextView;
  * @创建者 李国赫
  * @创建时间 2019/4/24 10:23
  * @描述
+ * 自定义dialog
  */
 public class MyDialog extends Dialog {
 
@@ -29,8 +29,8 @@ public class MyDialog extends Dialog {
     private ConfirmOnClickListener confirmOnClickListener;
     private CancelOnClickListener  cancelOnClickListener;
 
-    public MyDialog(Activity activity) {
-        super(activity);
+    public MyDialog(Context context) {
+        super(context);
     }
 
     /**

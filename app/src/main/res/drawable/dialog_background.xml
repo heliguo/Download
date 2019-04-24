@@ -8,4 +8,5 @@
         android:color="#ffffff" />
     <!-- 圆角 -->
     <corners android:radius="10dp" />
+
 </shape>
