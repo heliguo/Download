@@ -15,8 +15,7 @@ import java.text.NumberFormat;
 /**
  * @创建者 李国赫
  * @创建时间 2019/4/24 14:52
- * @描述
- * 水平progressbar的自定义
+ * @描述 水平progressbar的自定义
  */
 public class MyProgressDialog extends AlertDialog {
 
@@ -45,7 +44,7 @@ public class MyProgressDialog extends AlertDialog {
 
     public MyProgressDialog(Context context) {
         super(context);
-
+        initFormats();
     }
 
     @SuppressLint("HandlerLeak")
@@ -54,7 +53,6 @@ public class MyProgressDialog extends AlertDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_progress_dialog);
         initView();
-        initFormats();
         updateHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -62,12 +60,10 @@ public class MyProgressDialog extends AlertDialog {
                 //获取progressbar最大值及下载量
                 int progress = mProgressBar.getProgress();
                 int max = mProgressBar.getMax();
-                double dProgress = (double) progress / (double) (1024 * 1024);
-                double dMax = (double) max / (double) (1024 * 1024);
                 //总量及已下载量格式化
                 if (proNumberFormat != null) {
                     String format = proNumberFormat;
-                    numTv.setText(String.format(format, dProgress, dMax));
+                    numTv.setText(String.format(format,progress,max));
                 } else {
                     numTv.setText("");
                 }
@@ -81,8 +77,6 @@ public class MyProgressDialog extends AlertDialog {
                 }
             }
         };
-        //正在下载
-        onProgressChanged();
         //设置title
         if (titleProStr != null) {
             setMessage(titleProStr);
@@ -95,38 +89,27 @@ public class MyProgressDialog extends AlertDialog {
         if (currentPro > 0) {
             setProgress(currentPro);
         }
+        //正在下载
+        onProgressChanged();
+
     }
 
     public void initView() {
-        titleProTv = findViewById(R.id.progress_title);
-        percentTv = findViewById(R.id.progress_percent);
-        mProgressBar = findViewById(R.id.progressbar);
-        numTv = findViewById(R.id.progress_number);
+        titleProTv = (TextView) findViewById(R.id.progress_title);
+        percentTv = (TextView) findViewById(R.id.progress_percent);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        numTv = (TextView) findViewById(R.id.progress_number);
     }
 
     private void initFormats() {
         //1代表下载量值
         // 2代表总量值
         // .2代表2位小数
-        proNumberFormat = "%1.1f/%2.1f";
+        proNumberFormat = "%1d/%2d";
         //下载量百分比显示
         mNumberFormat = NumberFormat.getPercentInstance();
         //0代表不显示小数位
         mNumberFormat.setMaximumFractionDigits(0);
-    }
-
-    private void onProgressChanged() {
-        updateHandler.sendEmptyMessage(0);
-    }
-
-
-
-    //获取最大值
-    public int getMax() {
-        if (mProgressBar != null) {
-            return mProgressBar.getMax();
-        }
-        return mMax;
     }
 
     //设置最大值
@@ -158,6 +141,10 @@ public class MyProgressDialog extends AlertDialog {
         } else {
             titleProStr = message;
         }
+    }
+
+    private void onProgressChanged() {
+        updateHandler.sendEmptyMessage(0);
     }
 
     @Override

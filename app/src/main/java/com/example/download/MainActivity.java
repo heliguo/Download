@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //按需更改url
-                String url = "http://172.22.50.1:8080/app/qq.apk";
+                String url = "http://172.24.252.1:8080/app/qq.apk";
                 String path = Environment.getExternalStorageDirectory()+"";
                 UpdateUtil util = new UpdateUtil(MainActivity.this);
                 util.requestVersionCode(2,path,"qq.apk",url);

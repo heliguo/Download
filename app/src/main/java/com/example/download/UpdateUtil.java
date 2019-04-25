@@ -64,6 +64,7 @@ public class UpdateUtil {
             switch (msg.what) {
                 case DOWNLOADING:
                     mMyProgressDialog.setProgress(progress);
+//                    mProgressDialog.setProgress(progress);
                     break;
                 case DOWNLOAD_FINISH:
                     installApk();
@@ -144,6 +145,13 @@ public class UpdateUtil {
                         new MyDialog.ConfirmOnClickListener() {
                             @Override
                             public void onConfirmClick() {
+//                                mProgressDialog = new ProgressDialog(activity);
+//                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//                                mProgressDialog.setMax(100);
+//                                mProgressDialog.setTitle("正在下载...");
+//                                mProgressDialog.setCancelable(false);
+//                                mMyDialog.dismiss();
+//                                mProgressDialog.show();
                                 mMyProgressDialog = new MyProgressDialog(activity);
                                 mMyProgressDialog.setMax(100);
                                 mMyProgressDialog.setTitle("正在下载...");
@@ -154,6 +162,7 @@ public class UpdateUtil {
                                 if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
                                     mMyProgressDialog.dismiss();
+                                    mProgressDialog.dismiss();
                                     ActivityCompat.requestPermissions
                                             (activity, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
                                 } else {
@@ -196,12 +205,13 @@ public class UpdateUtil {
                         count += num;
                         //计算下载进度
                         progress = (int) ((float) count / length * 100);
-                        mHandler.sendEmptyMessage(DOWNLOADING);
                         //进度传递
+                        mHandler.sendEmptyMessage(DOWNLOADING);
                         if (num <= 0) {
                             mHandler.sendEmptyMessage(DOWNLOAD_FINISH);
                             updateFlag = true;
                             mMyProgressDialog.dismiss();
+                            mProgressDialog.dismiss();
                             break;
                         }
                         fos.write(buf, 0, num);
@@ -226,7 +236,7 @@ public class UpdateUtil {
     private void installApk() {
         File newFile = new File(savePath, apkName);
         Intent intent = new Intent(Intent.ACTION_VIEW);
-
+        intent.setAction(android.content.Intent.ACTION_VIEW);
         //Android7.0后自动更新需要通过FileProvider读取文件和完成更新
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -235,6 +245,7 @@ public class UpdateUtil {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(contentUri, "applacation/vnd.android.package-archive");
         } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setDataAndType(Uri.fromFile(newFile), "applacation/vnd.android.package-archive");
         }
         activity.startActivity(intent);
