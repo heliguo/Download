@@ -1,8 +1,10 @@
 package com.example.download;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -52,9 +54,13 @@ public class UpdateUtil {
     //下载完成标志
     private boolean          updateFlag = false;
 
+    public UpdateUtil() {
+    }
+
     public UpdateUtil(Activity activity) {
         this.activity = activity;
     }
+
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -63,8 +69,8 @@ public class UpdateUtil {
             super.handleMessage(msg);
             switch (msg.what) {
                 case DOWNLOADING:
-                    mMyProgressDialog.setProgress(progress);
-//                    mProgressDialog.setProgress(progress);
+                    //                    mMyProgressDialog.setProgress(progress);
+                    mProgressDialog.setProgress(progress);
                     break;
                 case DOWNLOAD_FINISH:
                     installApk();
@@ -145,26 +151,26 @@ public class UpdateUtil {
                         new MyDialog.ConfirmOnClickListener() {
                             @Override
                             public void onConfirmClick() {
-//                                mProgressDialog = new ProgressDialog(activity);
-//                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//                                mProgressDialog.setMax(100);
-//                                mProgressDialog.setTitle("正在下载...");
-//                                mProgressDialog.setCancelable(false);
-//                                mMyDialog.dismiss();
-//                                mProgressDialog.show();
-                                mMyProgressDialog = new MyProgressDialog(activity);
-                                mMyProgressDialog.setMax(100);
-                                mMyProgressDialog.setTitle("正在下载...");
-                                mMyProgressDialog.setCancelable(false);
+                                mProgressDialog = new ProgressDialog(activity);
+                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                mProgressDialog.setMax(100);
+                                mProgressDialog.setTitle("正在下载...");
+                                mProgressDialog.setCancelable(false);
                                 mMyDialog.dismiss();
-                                mMyProgressDialog.show();
+                                mProgressDialog.show();
+                                //                                mMyProgressDialog = new MyProgressDialog(activity);
+                                //                                mMyProgressDialog.setMax(100);
+                                //                                mMyProgressDialog.setTitle("正在下载...");
+                                //                                mMyProgressDialog.setCancelable(false);
+                                //                                mMyDialog.dismiss();
+                                //                                mMyProgressDialog.show();
                                 //判断文件读写权限
                                 if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
-                                    mMyProgressDialog.dismiss();
+                                    //                                    mMyProgressDialog.dismiss();
                                     mProgressDialog.dismiss();
                                     ActivityCompat.requestPermissions
-                                            (activity, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+                                            (activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                                 } else {
                                     new DownloadApk().start();
                                 }
@@ -174,6 +180,7 @@ public class UpdateUtil {
             }
         });
     }
+
 
     /**
      * 下载
@@ -210,7 +217,7 @@ public class UpdateUtil {
                         if (num <= 0) {
                             mHandler.sendEmptyMessage(DOWNLOAD_FINISH);
                             updateFlag = true;
-                            mMyProgressDialog.dismiss();
+                            //                            mMyProgressDialog.dismiss();
                             mProgressDialog.dismiss();
                             break;
                         }
@@ -225,28 +232,24 @@ public class UpdateUtil {
             }
         }
     }
-    /**
-     * 支持断点下载
-     */
-
 
     /**
      * 安装apk
      */
     private void installApk() {
         File newFile = new File(savePath, apkName);
+        System.out.println(newFile);
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //Android7.0后自动更新需要通过FileProvider读取文件和完成更新
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri contentUri = FileProvider.getUriForFile(activity,
                     packageName + ".FileProvider", newFile);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(contentUri, "applacation/vnd.android.package-archive");
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setDataAndType(Uri.fromFile(newFile), "applacation/vnd.android.package-archive");
+            intent.setDataAndType(Uri.parse("file://" + newFile),
+                    "application/vnd.android.package-archive");
         }
         activity.startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
