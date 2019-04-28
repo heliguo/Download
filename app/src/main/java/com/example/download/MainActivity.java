@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //合并成功
     public void onPatch() {
 
         String oldfile = Environment.getExternalStorageDirectory() + "/app-debug_old1.apk";
@@ -66,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //生成差量包
     public void onDiff() {
+
         String oldfile = Environment.getExternalStorageDirectory() + "/app-debug_old1.apk";
         String newfile = Environment.getExternalStorageDirectory() + "/app-debug_new1.apk";
         String patchfile = Environment.getExternalStorageDirectory() + "/app-debug_patch1.patch";
