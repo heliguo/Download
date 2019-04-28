@@ -8,11 +8,26 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/check_updatge"
+    android:id="@+id/check_updatge"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:text="check update"
+    android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/patch"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="check update"
+        android:text="patch"
+        android:textAllCaps="false" />
+    <Button
+        android:id="@+id/diff"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="diff"
         android:textAllCaps="false" />
 
 

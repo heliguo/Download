@@ -54,13 +54,11 @@ public class UpdateUtil {
     //下载完成标志
     private boolean          updateFlag = false;
 
-    public UpdateUtil() {
-    }
+    public UpdateUtil() {    }
 
     public UpdateUtil(Activity activity) {
         this.activity = activity;
     }
-
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -69,7 +67,7 @@ public class UpdateUtil {
             super.handleMessage(msg);
             switch (msg.what) {
                 case DOWNLOADING:
-                    //                    mMyProgressDialog.setProgress(progress);
+//                                        mMyProgressDialog.setProgress(progress);
                     mProgressDialog.setProgress(progress);
                     break;
                 case DOWNLOAD_FINISH:
@@ -158,16 +156,16 @@ public class UpdateUtil {
                                 mProgressDialog.setCancelable(false);
                                 mMyDialog.dismiss();
                                 mProgressDialog.show();
-                                //                                mMyProgressDialog = new MyProgressDialog(activity);
-                                //                                mMyProgressDialog.setMax(100);
-                                //                                mMyProgressDialog.setTitle("正在下载...");
-                                //                                mMyProgressDialog.setCancelable(false);
-                                //                                mMyDialog.dismiss();
-                                //                                mMyProgressDialog.show();
+//                                                                mMyProgressDialog = new MyProgressDialog(activity);
+//                                                                mMyProgressDialog.setMax(100);
+//                                                                mMyProgressDialog.setTitle("正在下载...");
+//                                                                mMyProgressDialog.setCancelable(false);
+//                                                                mMyDialog.dismiss();
+//                                                                mMyProgressDialog.show();
                                 //判断文件读写权限
                                 if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
-                                    //                                    mMyProgressDialog.dismiss();
+//                                                                        mMyProgressDialog.dismiss();
                                     mProgressDialog.dismiss();
                                     ActivityCompat.requestPermissions
                                             (activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -217,7 +215,7 @@ public class UpdateUtil {
                         if (num <= 0) {
                             mHandler.sendEmptyMessage(DOWNLOAD_FINISH);
                             updateFlag = true;
-                            //                            mMyProgressDialog.dismiss();
+//                                                        mMyProgressDialog.dismiss();
                             mProgressDialog.dismiss();
                             break;
                         }
