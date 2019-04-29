@@ -24,12 +24,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * @创建者 李国赫
  * @创建时间 2019/4/23 10:25
- * @描述 app自动更新，后台下载，断点下载选择
+ * @描述 app自动更新，后台下载
  * 需提供：
  * 1、下载地址URL
  * 2、apk需要保存位置
@@ -40,6 +41,7 @@ public class UpdateUtil {
 
     private static final int DOWNLOADING     = 1;
     private static final int DOWNLOAD_FINISH = 2;
+    private static final int DOWNLOAD_PUASED = 3;
 
     private Activity         activity;
     private String           packageName;
@@ -54,7 +56,8 @@ public class UpdateUtil {
     //下载完成标志
     private boolean          updateFlag = false;
 
-    public UpdateUtil() {    }
+    public UpdateUtil() {
+    }
 
     public UpdateUtil(Activity activity) {
         this.activity = activity;
@@ -67,11 +70,14 @@ public class UpdateUtil {
             super.handleMessage(msg);
             switch (msg.what) {
                 case DOWNLOADING:
-//                                        mMyProgressDialog.setProgress(progress);
+                    //mMyProgressDialog.setProgress(progress);
                     mProgressDialog.setProgress(progress);
                     break;
                 case DOWNLOAD_FINISH:
                     installApk();
+                    break;
+                case DOWNLOAD_PUASED:
+//                    continueDownload();
                     break;
             }
         }
@@ -156,16 +162,16 @@ public class UpdateUtil {
                                 mProgressDialog.setCancelable(false);
                                 mMyDialog.dismiss();
                                 mProgressDialog.show();
-//                                                                mMyProgressDialog = new MyProgressDialog(activity);
-//                                                                mMyProgressDialog.setMax(100);
-//                                                                mMyProgressDialog.setTitle("正在下载...");
-//                                                                mMyProgressDialog.setCancelable(false);
-//                                                                mMyDialog.dismiss();
-//                                                                mMyProgressDialog.show();
+                                // mMyProgressDialog = new MyProgressDialog(activity);
+                                // mMyProgressDialog.setMax(100);
+                                // mMyProgressDialog.setTitle("正在下载...");
+                                // mMyProgressDialog.setCancelable(false);
+                                // mMyDialog.dismiss();
+                                // mMyProgressDialog.show();
                                 //判断文件读写权限
                                 if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
-//                                                                        mMyProgressDialog.dismiss();
+                                    // mMyProgressDialog.dismiss();
                                     mProgressDialog.dismiss();
                                     ActivityCompat.requestPermissions
                                             (activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -193,9 +199,9 @@ public class UpdateUtil {
                     URL url = new URL(downloadUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
+                    //文件总长度
                     int length = connection.getContentLength();
                     InputStream is = connection.getInputStream();
-
                     File file = new File(savePath);
                     if (file.exists()) {
                         file.mkdir();
@@ -206,6 +212,7 @@ public class UpdateUtil {
                     int count = 0;
                     byte[] buf = new byte[1024];
                     do {
+
                         int num = is.read(buf);
                         count += num;
                         //计算下载进度
@@ -215,7 +222,7 @@ public class UpdateUtil {
                         if (num <= 0) {
                             mHandler.sendEmptyMessage(DOWNLOAD_FINISH);
                             updateFlag = true;
-//                                                        mMyProgressDialog.dismiss();
+                            // mMyProgressDialog.dismiss();
                             mProgressDialog.dismiss();
                             break;
                         }
@@ -229,6 +236,7 @@ public class UpdateUtil {
                 e.printStackTrace();
             }
         }
+
     }
 
     /**

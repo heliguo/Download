@@ -11,6 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/http_https"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -19,7 +20,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,12 +36,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!--<service-->
-            <!--android:name=".UpdateUtil"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true">-->
-
-        <!--</service>-->
     </application>
 
 </manifest>

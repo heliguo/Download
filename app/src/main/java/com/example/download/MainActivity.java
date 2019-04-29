@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //按需更改url
                 String url = "http://192.168.22.68:8080/app/app-debug_new1.apk";
+//                String url = "https://192.168.22.68:8443/app/app-debug_new1.apk";
                 String path = "" + Environment.getExternalStorageDirectory();
                 UpdateUtil util = new UpdateUtil(MainActivity.this);
                 util.requestVersionCode(2, path, "app-debug_new1.apk", url);
