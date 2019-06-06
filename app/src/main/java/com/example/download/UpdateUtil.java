@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,9 +58,6 @@ public class UpdateUtil {
     //下载完成标志
     private boolean          updateFlag = false;
 
-    public UpdateUtil() {
-    }
-
     public UpdateUtil(Activity activity) {
         this.activity = activity;
     }
@@ -77,7 +76,6 @@ public class UpdateUtil {
                     installApk();
                     break;
                 case DOWNLOAD_PUASED:
-//                    continueDownload();
                     break;
             }
         }
@@ -198,6 +196,8 @@ public class UpdateUtil {
                     //传入下载路径
                     URL url = new URL(downloadUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(3000);
+                    connection.setRequestMethod("GET");
                     connection.connect();
                     //文件总长度
                     int length = connection.getContentLength();
@@ -212,7 +212,6 @@ public class UpdateUtil {
                     int count = 0;
                     byte[] buf = new byte[1024];
                     do {
-
                         int num = is.read(buf);
                         count += num;
                         //计算下载进度
@@ -231,6 +230,7 @@ public class UpdateUtil {
                     //关闭资源
                     fos.close();
                     is.close();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -260,6 +260,5 @@ public class UpdateUtil {
         activity.startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
-
 
 }
