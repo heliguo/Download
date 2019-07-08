@@ -150,32 +150,29 @@ public class UpdateUtil {
                             }
                         });
                 mMyDialog.setConfirmOnClickListener("立即更新",
-                        new MyDialog.ConfirmOnClickListener() {
-                            @Override
-                            public void onConfirmClick() {
-                                mProgressDialog = new ProgressDialog(activity);
-                                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                mProgressDialog.setMax(100);
-                                mProgressDialog.setTitle("正在下载...");
-                                mProgressDialog.setCancelable(false);
-                                mMyDialog.dismiss();
-                                mProgressDialog.show();
-                                // mMyProgressDialog = new MyProgressDialog(activity);
-                                // mMyProgressDialog.setMax(100);
-                                // mMyProgressDialog.setTitle("正在下载...");
-                                // mMyProgressDialog.setCancelable(false);
-                                // mMyDialog.dismiss();
-                                // mMyProgressDialog.show();
-                                //判断文件读写权限
-                                if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
-                                        != PackageManager.PERMISSION_GRANTED) {
-                                    // mMyProgressDialog.dismiss();
-                                    mProgressDialog.dismiss();
-                                    ActivityCompat.requestPermissions
-                                            (activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                } else {
-                                    new DownloadApk().start();
-                                }
+                        () -> {
+                            mProgressDialog = new ProgressDialog(activity);
+                            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            mProgressDialog.setMax(100);
+                            mProgressDialog.setTitle("正在下载...");
+                            mProgressDialog.setCancelable(false);
+                            mMyDialog.dismiss();
+                            mProgressDialog.show();
+                            // mMyProgressDialog = new MyProgressDialog(activity);
+                            // mMyProgressDialog.setMax(100);
+                            // mMyProgressDialog.setTitle("正在下载...");
+                            // mMyProgressDialog.setCancelable(false);
+                            // mMyDialog.dismiss();
+                            // mMyProgressDialog.show();
+                            //判断文件读写权限
+                            if (ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                // mMyProgressDialog.dismiss();
+                                mProgressDialog.dismiss();
+                                ActivityCompat.requestPermissions
+                                        (activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            } else {
+                                new DownloadApk().start();
                             }
                         });
                 mMyDialog.show();

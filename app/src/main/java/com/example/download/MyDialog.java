@@ -44,7 +44,7 @@ public class MyDialog extends Dialog {
     }
 
     /**
-     * 设置确定按钮文本和监听事件
+     * 设置取消按钮文本和监听事件
      */
     public void setCancelOnClickListener(String cancelStr, CancelOnClickListener cancelOnClickListener) {
         if (cancelStr != null) {
