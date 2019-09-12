@@ -1,6 +1,6 @@
 package com.example.download;
 
-import android.content.Context;
+
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

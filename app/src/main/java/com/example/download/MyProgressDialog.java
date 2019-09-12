@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.text.NumberFormat;
 
 /**
- * @创建者 李国赫
+ * @创建者 lgh
  * @创建时间 2019/4/24 14:52
  * @描述 水平progressbar的自定义
  */
