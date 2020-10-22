@@ -9,6 +9,11 @@
     <external-path
         name="rc_external_path"
         path="." />
+
+    <external-path
+        name="external_files"
+        path="." />
+
     <root-path
         name="rc_root_path"
         path="." />

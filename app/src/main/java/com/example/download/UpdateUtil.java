@@ -101,6 +101,7 @@ public class UpdateUtil {
     /**
      * 联网查询版本号,有新版本更新
      */
+    @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     public void requestVersionCode(final int newCode, final String path, final String name, final String url) {
         new Thread() {
             @Override
@@ -117,12 +118,8 @@ public class UpdateUtil {
                     if (newVersionCode > curVersuinCode) {
                         //启动下载
                         showUpdateProgress();
-                    } else {
-                        return;
                     }
                 }
-
-
             }
 
         }.start();
